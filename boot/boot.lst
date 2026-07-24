@@ -1,0 +1,80 @@
+     1                                  [bits 16]
+     2                                  org 0x7c00
+     3                                  
+     4                                  start:
+     5 00000000 FA                          cli
+     6 00000001 B8C007                      mov ax, 0x07c0
+     7 00000004 8ED8                        mov ds, ax
+     8 00000006 8ED0                        mov ss, ax
+     9 00000008 BC007C                      mov sp, 0x7c00
+    10                                  
+    11 0000000B 8816[6200]                  mov [boot_drive], dl
+    12                                  
+    13 0000000F B81300                      mov ax, 0x0013
+    14 00000012 CD10                        int 0x10
+    15                                  
+    16 00000014 BB0000                      mov bx, 0
+    17 00000017 B600                        mov dh, 0
+    18 00000019 8A16[6200]                  mov dl, [boot_drive]
+    19 0000001D B500                        mov ch, 0
+    20 0000001F B102                        mov cl, 2
+    21 00000021 B80010                      mov ax, 0x1000
+    22 00000024 8EC0                        mov es, ax
+    23 00000026 B402                        mov ah, 0x02
+    24 00000028 B064                        mov al, 100
+    25 0000002A CD13                        int 0x13
+    26 0000002C 7232                        jc disk_error
+    27                                  
+    28 0000002E FA                          cli
+    29 0000002F 0F0116[6300]                lgdt [gdt_descriptor]
+    30 00000034 0F20C0                      mov eax, cr0
+    31 00000037 6683C801                    or eax, 1
+    32 0000003B 0F22C0                      mov cr0, eax
+    33 0000003E EA[4300]0800                jmp 0x08:protected_entry
+    34                                  
+    35                                  [bits 32]
+    36                                  protected_entry:
+    37 00000043 66B81000                    mov ax, 0x10
+    38 00000047 8ED8                        mov ds, ax
+    39 00000049 8EC0                        mov es, ax
+    40 0000004B 8EE0                        mov fs, ax
+    41 0000004D 8EE8                        mov gs, ax
+    42 0000004F 8ED0                        mov ss, ax
+    43 00000051 BC00000900                  mov esp, 0x90000
+    44                                  
+    45 00000056 EA000001000800              jmp 0x08:0x10000
+    46                                  
+    47                                  hang:
+    48 0000005D F4                          hlt
+    49 0000005E EBFD                        jmp hang
+    50                                  
+    51                                  disk_error:
+    52 00000060 EBFE                        jmp disk_error
+    53                                  
+    54 00000062 00                      boot_drive: db 0
+    55                                  
+    56                                  gdt_descriptor:
+    57 00000063 1700                        dw gdt_end - gdt_start - 1
+    58 00000065 [69000000]                  dd gdt_start
+    59                                  
+    60                                  gdt_start:
+    61 00000069 0000000000000000            dq 0
+    62                                  
+    63 00000071 FFFF                        dw 0xFFFF
+    64 00000073 0000                        dw 0x0000
+    65 00000075 00                          db 0x00
+    66 00000076 9A                          db 10011010b
+    67 00000077 CF                          db 11001111b
+    68 00000078 00                          db 0x00
+    69                                  
+    70 00000079 FFFF                        dw 0xFFFF
+    71 0000007B 0000                        dw 0x0000
+    72 0000007D 00                          db 0x00
+    73 0000007E 92                          db 10010010b
+    74 0000007F CF                          db 11001111b
+    75 00000080 00                          db 0x00
+    76                                  
+    77                                  gdt_end:
+    78                                  
+    79 00000081 00<rep 17Dh>            times 510 - ($ - $$) db 0
+    80 000001FE 55AA                        dw 0xAA55
