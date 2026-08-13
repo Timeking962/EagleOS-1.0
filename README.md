@@ -1,6 +1,6 @@
 EagleOS 1.0
 
-An Operating system designed to mimic Windows 3.11 in functionality.
+An Operating system developed in C++ and Assembly that is designed to mimic Windows 3.11 in functionality.
 
 Planned features:
 1. A Full Bootloader (Already Implemented)
