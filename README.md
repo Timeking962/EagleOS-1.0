@@ -1,3 +1,17 @@
 EagleOS 1.0
 
 An Operating system designed to mimic Windows 3.11 in functionality.
+
+Planned features:
+1. A Full Bootloader (Already Implemented)
+2. A proper Kernel with similar functions to that of the Windows 3.11 Kernel.
+3. A driver system.
+4. A setup process where you can install the OS to a hard drive.
+5. Full keyboard and mouse functionality.
+6. A full 16-Bit Hierarchical File System.
+7. A Graphical User Interface with overlapping windows, and a standardized window border layout with close, maximize and minimize buttons as well as a menu bar within the windows.
+8. An application executable format.
+9. A set of simple built-in applications.
+10. A Software Development Kit for creating applications.
+
+Feel free to add to this project. It will be fully open source.
